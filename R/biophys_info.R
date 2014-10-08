@@ -18,5 +18,6 @@
 #' INSERT RELEVANT REFERENCE HERE
 #'
 #' @author Bill Peterman \email{bill.peterman@@gmail.com}
+#' Matt Gifford \email{megifford@@uca.edu}
 #'
 NULL

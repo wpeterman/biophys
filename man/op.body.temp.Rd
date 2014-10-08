@@ -91,7 +91,7 @@ Calculates operative body temperature
 r.max <- raster(ncol=10, nrow=10)
 
 # assign values to cells
-r.max[] <- runif(ncell(r.max),10,20)#'
+r.max[] <- runif(ncell(r.max),10,20)
 r.min <- r.max - 5
 r.elev <- r.max * 10
 

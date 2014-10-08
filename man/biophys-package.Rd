@@ -16,6 +16,7 @@ This package (will eventually) contain functions to run and test spatially-expli
 }
 \author{
 Bill Peterman \email{bill.peterman@gmail.com}
+Matt Gifford \email{megifford@uca.edu}
 }
 \references{
 Please cite:
