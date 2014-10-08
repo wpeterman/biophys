@@ -17,7 +17,7 @@
 #' @references Please cite:
 #' INSERT RELEVANT REFERENCE HERE
 #'
-#' @author Bill Peterman \email{bill.peterman@@gmail.com}
+#' @author Bill Peterman \email{bill.peterman@@gmail.com}\cr
 #' Matt Gifford \email{megifford@@uca.edu}
 #'
 NULL
