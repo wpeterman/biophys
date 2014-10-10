@@ -29,11 +29,9 @@
 #'
 #' @export
 #' @author Bill Peterman <Bill.Peterman@@gmail.com>
-#' @return A raster stack that includes (1) annual energy budget; (2) total annual metabolic raaet; (3) annual potential foraging time; (4) total annual consumption
+#' @return A list that containing a raster stack that includes (1) annual energy budget; (2) total annual metabolic rate; (3) annual potential foraging time; (4) total annual consumption, as well as the annual values in vector format
 #' @details This function summarizes hourly measures to calculate average consumption, average metabolic rate, average potential foraging time, and total metabolic expenditure.
-#'
-#'
-#'
+
 
 budget <- function(biophys.inputs, PFT.out, metabolism.out){
 

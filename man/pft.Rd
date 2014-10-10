@@ -4,12 +4,12 @@
 \title{Calculate Potential Foraging Time (PFT) based on evaporative water loss}
 \usage{
 pft(biophys.inputs,
-temp.data)
+temp.out)
 }
 \arguments{
 \item{biophys.inputs}{Object created from running \code{\link[biophys]{biophys.prep}}}
 
-\item{temp.data}{Hourly operative body temperature and air temperature. Pass results from \code{\link[biophys]{op.temp.body}}}
+\item{temp.out}{Hourly operative body temperature and air temperature. Pass results from \code{\link[biophys]{op.temp.body}}}
 }
 \value{
 This function will return the hourly evaporative water loss
@@ -33,9 +33,9 @@ r.elev <- r.max * 10
 night.hours <- c(19:24,1:7)
 
 biophys.input <- biophys.prep(r.max, r.min, r.elev, hour = night.hours, month = c("April"), Julian = c(106))
-temp.data <- op.body.temp(biophys.input)
+temp.out <- op.body.temp(biophys.input)
 
-PFT <- pft(biophys.inputs, temp.data)
+PFT.out <- pft(biophys.inputs, temp.out)
 }
 \author{
 Bill Peterman <Bill.Peterman@gmail.com>

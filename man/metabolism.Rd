@@ -4,12 +4,12 @@
 \title{Calculate active and resting metabolic rates, digestive efficiency, and necessary food consumption}
 \usage{
 metabolism(biophys.inputs,
-temp.data)
+temp.out)
 }
 \arguments{
 \item{biophys.inputs}{Object created from running \code{\link[biophys]{biophys.prep}}}
 
-\item{temp.data}{Hourly operative body temperature and air temperature. Pass results from \code{\link[biophys]{op.temp.body}}}
+\item{temp.out}{Hourly operative body temperature and air temperature. Pass results from \code{\link[biophys]{op.temp.body}}}
 }
 \value{
 This function returns hourly active and resting metabolic rates, digestive efficiency, and food consumption
@@ -33,9 +33,9 @@ r.elev <- r.max * 10
 night.hours <- c(19:24,1:7)
 
 biophys.input <- biophys.prep(r.max, r.min, r.elev, hour = night.hours, month = c("April"), Julian = c(106))
-temp.data <- op.body.temp(biophys.input)
+temp.out <- op.body.temp(biophys.input)
 
-metab.out <- metabolism(biophys.inputs, temp.data)
+metabolism.out <- metabolism(biophys.inputs, temp.out)
 }
 \author{
 Bill Peterman <Bill.Peterman@gmail.com>
