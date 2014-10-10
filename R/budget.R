@@ -34,7 +34,6 @@
 
 
 budget <- function(biophys.inputs, PFT.out, metabolism.out){
-
   PFT <- vector(mode = "list",length = length(PFT.out))
   M.Act <- vector(mode = "list",length = length(PFT.out))
   M.Inact <- vector(mode = "list",length = length(PFT.out))
@@ -130,7 +129,6 @@ budget <- function(biophys.inputs, PFT.out, metabolism.out){
 # Final data to export
 out <- list(Raster.results = r.stack,
             Annual.results = Annual.results)
-
 return(out)
 
 } # End function

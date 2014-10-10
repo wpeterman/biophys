@@ -11,6 +11,7 @@
 #' @details This is a global convenience function to execute \code{\link[biophys]{op.temp.body}}, \code{\link[biophys]{pft}}, \code{\link[biophys]{metabolism}}, and \code{\link[biophys]{budget}}.
 #'
 a.budget <- function(biophys.inputs) {
+
   temp.out <- op.body.temp(biophys.inputs)
 
   PFT.out <- pft(biophys.inputs,
@@ -18,9 +19,10 @@ a.budget <- function(biophys.inputs) {
 
   metabolism.out <- metabolism(biophys.inputs,
                                temp.out)
-
+  rm(temp.out)
   annual.budget <- budget(biophys.inputs,
                           PFT.out,
                           metabolism.out)
   return(annual.budget)
+
 }

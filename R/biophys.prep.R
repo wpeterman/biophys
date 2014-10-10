@@ -118,16 +118,35 @@ biophys.prep <- function(Tmax,                    # Maximum and minimum temperat
   Tmax.dat <- Tmax
   Tmin.dat <- Tmin
 
-  layers <- ifelse(class(Tmax.dat)!='RasterLayer',length(Tmax.dat),1)
-  Tavg <- vector(mode = "list",length = layers)
+  if(class(Tmax.dat)!='RasterLayer'){
+    if(class(Tmax.dat)=='RasterStack') {
+      type <- "stack"
+      layers <- dim(Tmax.dat)[3]
+      Tavg <- vector(mode = "list",length = layers)
+    } else {
+      type <- "list"
+      layers <- length(Tmax.dat)
+      Tavg <- vector(mode = "list",length = layers)
+    }
+  } else{
+    type <- "raster"
+    layers <- 1
+    Tavg <- vector(mode = "list",length = layers)
+  }
+
   for(i in 1:layers){
-    if(layers>1){
+    if(type=="list"){
       Tx <- raster(Tmax.dat[i])
       Tm <- raster(Tmin.dat[i])
       raster.dat <- stack(Tx, Tm)
       names(raster.dat) <- c("Tx","Tmin")
-    } else {
+    } else if(type=="raster") {
       raster.dat <- stack(Tmax.dat, Tmin.dat)
+      names(raster.dat) <- c("Tx","Tmin")
+    } else {
+      Tx <- Tmax.dat[[i]]
+      Tm <- Tmin.dat[[i]]
+      raster.dat <- stack(Tx, Tm)
       names(raster.dat) <- c("Tx","Tmin")
     }
 
@@ -207,6 +226,7 @@ out <- list(Tmax = Tmax,
             repro = repro,
             Tavg = Tavg,
             raster.dat = raster.dat2,
-            vector.length = vector.length
+            vector.length = vector.length,
+            type = type
             )
 }
