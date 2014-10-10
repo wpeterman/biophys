@@ -6,6 +6,7 @@
 multiple.periods(max.rast,
 min.rast,
 elev,
+J,
 hours,
 mean = TRUE,
 st.dev = TRUE,
@@ -13,9 +14,11 @@ out = "mean"
 ...)
 }
 \arguments{
-\item{max.rast}{A list providing the full path to all maximum temperature raster files.}
+\item{max.rast}{A list providing the full path to all maximum temperature raster files. Should be of same length and order as 'min.rast'}
 
-\item{min.rast}{A list providing the full path to all minimum temperature raster files.}
+\item{min.rast}{A list providing the full path to all minimum temperature raster files. Should be of same length and order as 'max.rast'}
+
+\item{J}{A list corresponding to the Julian day for each maximum/minimum period. Be sure that order dates matches order of file names in 'max.rast' and 'min.rast'}
 
 \item{elev}{Elevation raster object}
 

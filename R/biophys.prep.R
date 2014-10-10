@@ -1,11 +1,10 @@
 #' Preparation function to compile biophysical model constants and input.
-#' @param Tmax Maximum temperature raster object
-#' @param Tmin Minimum temperature raster object
+#' @param Tmax Maximum temperature raster object. Alternatively, a list of full paths to rasters can be supplied (see Details). The order of list elements must be them same for Tmin, month, and Julian.
+#' @param Tmin Minimum temperature raster object. Alternatively, a list of full paths to rasters can be supplied (see Details). The order of list elements must be them same for Tmax, month, and Julian.
 #' @param elev Elevation raster object
-#' @param Julian Julian day (1 - 365)
+#' @param month A vector of names to assign to the specified raster layer(s). If multiple months are supplied, the order must be them same as Tmax, Tmin, and Julian.
+#' @param Julian Julian day (1 - 365). If multiple months are supplied, the order of Julian must be them same as Tmax, Tmin, and month.
 #' @param hours A vector of values. Specify hours to calculate operative body temperature over.
-#' @param out If desired, the results of this function can be saved to the workspace as either a "list", RasterStack object ("raster"), or each hourly raster surface can be saved to a directory by specifying a path. (Default = 'list').
-#' @param grid.type Arguement specifying type of grid to export (Default =".asc"). Only needed if a directory path is specified for 'out'
 #' @param NoData.value Specify NoData value in raster layers (Default = -9999)
 #' @param an.height Height of animal off the ground (Default = 0.005)
 #' @param wind.height Height at which wind speed is measured (Default = 10)
@@ -30,10 +29,9 @@
 #' @usage op.body.temp(Tmax,
 #' Tmin,
 #' elev,
+#' month,
 #' Julian,
 #' hours,
-#' out = 'list',
-#' grid.type = ".asc",
 #' NoData.value = -9999,
 #' an.height = 0.005,
 #' wind.height = 10,
@@ -67,24 +65,28 @@
 #' # Make vector of hours
 #' night.hours <- c(19:24,1:7)
 #'
-#' biophys.input <- biophys.prep(r.max, r.min, r.elev, hour = night.hours, export = NULL)
+#' biophys.input <- biophys.prep(r.max, r.min, r.elev, hour = night.hours, month = c("April"), Julian = c(106))
 #'
 #' @export
 #' @author Bill Peterman <Bill.Peterman@@gmail.com>
-#' @return This function will return a raster object of operative body temperature, averaged over the specified hours.
+#' @return This function returns a list object with the necessary inputs for all other biophys functions.
+#' @details Full paths to raster files can be obtain using \code{\link[base]{list.files}}.
+#'
+#'  For example: Tmax.files <- list.files(path = "C:/RasterFiles/", pattern = "*max", full.names = TRUE)
+#'
+#'  Assuming raster files are stored in a folder called 'RasterFiles', this create the full path to files that include 'max' in the filename. It is advised keep all raster files in a folder separate from other files, and to have a common naming scheme for both minimum and maximum surfaces.
 
 biophys.prep <- function(Tmax,                    # Maximum and minimum temperature raster
                          Tmin,
                          elev,                    # elevation raster
-                         NoData.value = -9999,    # Specify NoData value in raster layers (-9999)
+                         month,                   # Name(s) of specified raster layers
+                         Julian,                  # Julian day
                          hours,                   # Specify values as vector. e.g., c(1,2,3)
-                         out = 'list',            # Directory where hourly raster files will be written
-                         grid.type = ".asc",      # Arguement specifying type of grid to export
+                         NoData.value = -9999,    # Specify NoData value in raster layers (-9999)
                          an.height = 0.005,       # Height of animal
                          wind.height = 10,        # Height of wind speed measure
                          u = 1.0,                # Measured wind speed at meter
                          pCp = 1200,              # Specific heat of air at constant pressure
-                         Julian = 15,                  # Julian day
                          RH = 0.95,               # Relative humidity
                          length.m = 0.055,        # Dimension of salamander
                          phi = 0.623,             # Latitude in radians
@@ -101,18 +103,30 @@ biophys.prep <- function(Tmax,                    # Maximum and minimum temperat
                          Fr.c = 0.5,
                          Fg.c = 0.5
 ) {
+if(class(Tmax)=='RasterLayer'){
+    raster.dat = list(
+              rast.extent = extent(Tmax),
+              rast.res = res(Tmax),
+              full.vector = as.vector(Tmax))
+  } else {
+    r <- raster(Tmax[1])
+    raster.dat = list(
+              rast.extent = extent(r),
+              rast.res = res(r),
+              full.vector = as.vector(r))
+  }
+
 out <- list(Tmax = Tmax,
             Tmin = Tmin,
             elev = elev,
-            NoData.value = NoData.value,
+            month = month,
+            Julian = Julian,
             hours = hours,
-            out = out,
-            grid.type = grid.type,
+            NoData.value = NoData.value,
             an.height = an.height,
             wind.height = wind.height,
             u = u,
             pCp = pCp,
-            J = J,
             RH = RH,
             length.m = length.m,
             phi = phi,
@@ -127,5 +141,7 @@ out <- list(Tmax = Tmax,
             Fd.c = Fd.c,
             Fa.c = Fa.c,
             Fr.c = Fr.c,
-            Fg.c = Fg.c)
+            Fg.c = Fg.c,
+            raster.dat = raster.dat
+            )
 }
