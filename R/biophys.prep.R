@@ -5,6 +5,8 @@
 #' @param month A vector of names to assign to the specified raster layer(s). If multiple months are supplied, the order must be them same as Tmax, Tmin, and Julian.
 #' @param Julian Julian day (1 - 365). If multiple months are supplied, the order of Julian must be them same as Tmax, Tmin, and month.
 #' @param hours A vector of values. Specify hours to calculate operative body temperature over.
+#' @param max.active_temp Maximum temprature that animals will be active (Default = 20)
+#' @param min.active_temp Minimum temperature that animals will be active (Default = 3)
 #' @param NoData.value Specify NoData value in raster layers (Default = -9999)
 #' @param an.height Height of animal off the ground (Default = 0.005)
 #' @param wind.height Height at which wind speed is measured (Default = 10)
@@ -29,9 +31,11 @@
 #' @usage op.body.temp(Tmax,
 #' Tmin,
 #' elev,
-#' month,
+#' month = NULL,
 #' Julian,
 #' hours,
+#' max.active_temp,
+#' min.active_temp,
 #' NoData.value = -9999,
 #' an.height = 0.005,
 #' wind.height = 10,
@@ -79,13 +83,15 @@
 biophys.prep <- function(Tmax,                    # Maximum and minimum temperature raster
                          Tmin,
                          elev,                    # elevation raster
-                         month,                   # Name(s) of specified raster layers
+                         month = NULL,            # Name(s) of specified raster layers
                          Julian,                  # Julian day
                          hours,                   # Specify values as vector. e.g., c(1,2,3)
+                         max.active_temp = 20,    # Maximum body temperature of active animas
+                         min.active_temp = 3,     # Minimum body temperature of active animals
                          NoData.value = -9999,    # Specify NoData value in raster layers (-9999)
                          an.height = 0.005,       # Height of animal
                          wind.height = 10,        # Height of wind speed measure
-                         u = 1.0,                # Measured wind speed at meter
+                         u = 1.0,                 # Measured wind speed at meter
                          pCp = 1200,              # Specific heat of air at constant pressure
                          RH = 0.95,               # Relative humidity
                          length.m = 0.055,        # Dimension of salamander
@@ -103,18 +109,61 @@ biophys.prep <- function(Tmax,                    # Maximum and minimum temperat
                          Fr.c = 0.5,
                          Fg.c = 0.5
 ) {
-if(class(Tmax)=='RasterLayer'){
-    raster.dat = list(
-              rast.extent = extent(Tmax),
-              rast.res = res(Tmax),
-              full.vector = as.vector(Tmax))
-  } else {
-    r <- raster(Tmax[1])
-    raster.dat = list(
-              rast.extent = extent(r),
-              rast.res = res(r),
-              full.vector = as.vector(r))
-  }
+  Tmax.dat <- Tmax
+  Tmin.dat <- Tmin
+
+  layers <- ifelse(class(Tmax.dat)!='RasterLayer',length(Tmax.dat),1)
+  Tavg <- vector(mode = "list",length = layers)
+  for(i in 1:layers){
+    if(layers>1){
+      Tx <- raster(Tmax.dat[i])
+      Tm <- raster(Tmin.dat[i])
+      raster.dat <- stack(Tx, Tm)
+      names(raster.dat) <- c("Tx","Tmin")
+    } else {
+      raster.dat <- stack(Tmax.dat, Tmin.dat)
+      names(raster.dat) <- c("Tx","Tmin")
+    }
+
+  NAvalue(raster.dat) <- NoData.value # Specify the NoData value
+#   plot(raster.dat) # Make sure things look right
+
+  # Convert rasters to vectors
+  tx <- as.vector(raster.dat[[1]])
+  tm <- as.vector(raster.dat[[2]])
+
+  # Remove NA values
+  tx <- tx[!is.na(tx)]
+  tm <- tm[!is.na(tm)]
+
+  Tavg[[i]] <- (tx+tm)/2
+
+  } # Close layer loop
+
+raster.dat2 = list(
+              rast.extent = extent(raster.dat[[1]]),
+              rast.res = res(raster.dat[[1]]),
+              full.vector = as.vector(raster.dat[[1]]))
+
+if(is.null(month)){
+  month <- paste0("month",seq_along(Tavg))
+}
+
+names(Tavg) <- names(month)
+vector.length <- length(tx)
+
+# if(class(Tmax)=='RasterLayer'){
+#     raster.dat = list(
+#               rast.extent = extent(Tmax),
+#               rast.res = res(Tmax),
+#               full.vector = as.vector(Tmax))
+#   } else {
+#     r <- raster(Tmax[1])
+#     raster.dat = list(
+#               rast.extent = extent(r),
+#               rast.res = res(r),
+#               full.vector = as.vector(r))
+#   }
 
 out <- list(Tmax = Tmax,
             Tmin = Tmin,
@@ -122,6 +171,8 @@ out <- list(Tmax = Tmax,
             month = month,
             Julian = Julian,
             hours = hours,
+            max.active_temp = max.active_temp,
+            min.active_temp = min.active_temp,
             NoData.value = NoData.value,
             an.height = an.height,
             wind.height = wind.height,
@@ -142,6 +193,8 @@ out <- list(Tmax = Tmax,
             Fa.c = Fa.c,
             Fr.c = Fr.c,
             Fg.c = Fg.c,
-            raster.dat = raster.dat
+            Tavg = Tavg,
+            raster.dat = raster.dat2,
+            vector.length = vector.length
             )
 }

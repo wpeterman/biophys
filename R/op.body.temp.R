@@ -16,7 +16,7 @@
 #' night.hours <- c(19:24,1:7)
 #'
 #' biophys.input <- biophys.prep(r.max, r.min, r.elev, hour = night.hours, month = c("April"), Julian = c(106))
-#' op.temp <- op.body.temp(biophys.input)
+#' temp.data <- op.body.temp(biophys.input)
 #'
 #' @export
 #' @author Bill Peterman <Bill.Peterman@@gmail.com>
@@ -54,7 +54,7 @@ op.body.temp <- function(biophys.inputs) {
 
   # Bioenergetic model for P. jordani (Energy Budget)
   #=========================================================================
- all.results <- list()
+ all.results <- vector(mode = "list",length = length(month))
  layers <- ifelse(class(Tmax.dat)!='RasterLayer',length(Tmax.dat),1)
   for(i in 1:layers){
     if(layers>1){
@@ -84,7 +84,7 @@ op.body.temp <- function(biophys.inputs) {
 #   vector.dat <- data.frame(Tx,Tmin=Tmin$Tmin,elev=elev$elev) %>% filter(!is.na(Tx),!is.na(Tmin),!is.na(elev))
 
   Tn=Tx-Tmin #Tn=daily temperature range (Celcius)
-  Tavg=(Tx+Tmin)/2
+#   Tavg=(Tx+Tmin)/2
   Tsa=(((1.39734+0.88841*Tx)+273.15)+((1.39734+0.88841*Tmin)+273.15))/2 #mean soil temperature from low and high points on transect (with adiabatic cooling rate of 0.575 degrees per 100m)
   Ad=Tn/2 #variable used in one of the time functions below
 
@@ -94,8 +94,8 @@ remove(Tmin) #removes Tmin matrix from memory
 #######################################################
 
 # Start for-loop to calculate values for each hour
-Te.hr <- list() # Empty list to store hourly body temp results in
-Ta.hr <- list() # Empty list to store hourly air temp results in
+Te.hr <- vector(mode = "list",length = length(hours)) # Empty list to store hourly body temp results in
+Ta.hr <- vector(mode = "list",length = length(hours)) # Empty list to store hourly air temp results in
 
 for(j in seq_along(hours)){
 hr <- hours[j]

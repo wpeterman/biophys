@@ -18,9 +18,9 @@
 #' night.hours <- c(19:24,1:7)
 #'
 #' biophys.input <- biophys.prep(r.max, r.min, r.elev, hour = night.hours, month = c("April"), Julian = c(106))
-#' op.temp <- op.body.temp(biophys.input)
+#' temp.data <- op.body.temp(biophys.input)
 #'
-#' PFT <- pft(biophys.inputs, op.temp)
+#' PFT <- pft(biophys.inputs, temp.data)
 #'
 #' @export
 #' @author Bill Peterman <Bill.Peterman@@gmail.com>
@@ -31,8 +31,8 @@ pft <- function(biophys.inputs,
                         temp.data
                         ) {
 
-  evap.loss <- list()
-  pft.hr <- list()
+  evap.loss <- vector(mode = "list",length = length(months))
+  pft.hr <- vector(mode = "list",length = length(biophys.inputs$hours))
 
   for(i in seq_along(temp.data)){
       dat.list <- temp.data[[i]]
@@ -64,6 +64,8 @@ evap.func <- function(Te, Ta, biophys.inputs) {
   pCp <- biophys.inputs$pCp
   u <- biophys.inputs$u
   RH <- biophys.inputs$RH
+  max.active_temp <- biophys.inputs$max.active_temp
+  min.active_temp <- biophys.inputs$min.active_temp
 
   mass=4599.1*length.m^2.5297 #equation to predict the mass of the salamander from the SVL
 
@@ -92,10 +94,10 @@ evap.func <- function(Te, Ta, biophys.inputs) {
   PFT[PFT>12] <- 12
 
   # If body temp is greater than 20, assign PFT of 0
-  PFT[Te>20] <- 0
+  PFT[Te>max.active_temp] <- 0
 
   # If body temp is less than 3, assign PFT of 0
-  PFT[Te<3] <- 0
+  PFT[Te<min.active_temp] <- 0
 
   return(PFT)
 } # Close evap function
