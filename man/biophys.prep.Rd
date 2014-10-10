@@ -9,6 +9,7 @@ elev,
 month = NULL,
 Julian,
 hours,
+days = NULL,
 max.active_temp,
 min.active_temp,
 NoData.value = -9999,
@@ -30,7 +31,8 @@ Fp = 0,
 Fd.c = 0.8,
 Fa.c = 0.5,
 Fr.c = 0.5,
-Fg.c = 0.5)
+Fg.c = 0.5,
+repro = 4.86)
 }
 \arguments{
 \item{Tmax}{Maximum temperature raster object. Alternatively, a list of full paths to rasters can be supplied (see Details). The order of list elements must be them same for Tmin, month, and Julian.}
@@ -44,6 +46,8 @@ Fg.c = 0.5)
 \item{Julian}{Julian day (1 - 365). If multiple months are supplied, the order of Julian must be them same as Tmax, Tmin, and month.}
 
 \item{hours}{A vector of values. Specify hours to calculate operative body temperature over.}
+
+\item{days}{A vector containing the number of days in each month. Order must correspond with order of months. If unspecified, each month/period will consist of 30 days.}
 
 \item{max.active_temp}{Maximum temprature that animals will be active (Default = 20)}
 
@@ -88,6 +92,8 @@ Fg.c = 0.5)
 \item{Fr.c}{Fr constant (Default = 0.5)}
 
 \item{Fg.c}{Fg constant (Default = 0.5)}
+
+\item{repro}{Energy (kJ) in 14 egg clutch (eggs 3.5 mm diameter). (Default = 4.86)}
 }
 \value{
 This function returns a list object with the necessary inputs for all other biophys functions.

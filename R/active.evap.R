@@ -1,9 +1,9 @@
 #' Calculate Potential Foraging Time (PFT) based on evaporative water loss
 #' @param biophys.inputs Object created from running \code{\link[biophys]{biophys.prep}}
-#' @param temp.data Hourly operative body temperature and air temperature. Pass results from \code{\link[biophys]{op.temp.body}}
+#' @param temp.out Hourly operative body temperature and air temperature. Pass results from \code{\link[biophys]{op.temp.body}}
 #'
 #' @usage pft(biophys.inputs,
-#' temp.data)
+#' temp.out)
 #'
 #' @examples
 #' # Create example data
@@ -18,9 +18,9 @@
 #' night.hours <- c(19:24,1:7)
 #'
 #' biophys.input <- biophys.prep(r.max, r.min, r.elev, hour = night.hours, month = c("April"), Julian = c(106))
-#' temp.data <- op.body.temp(biophys.input)
+#' temp.out <- op.body.temp(biophys.input)
 #'
-#' PFT <- pft(biophys.inputs, temp.data)
+#' PFT.out <- pft(biophys.inputs, temp.out)
 #'
 #' @export
 #' @author Bill Peterman <Bill.Peterman@@gmail.com>
@@ -28,14 +28,14 @@
 #' @details This function is a wrapper to call an internal function (evap.func)
 
 pft <- function(biophys.inputs,
-                        temp.data
+                temp.out
                         ) {
 
   evap.loss <- vector(mode = "list",length = length(months))
   pft.hr <- vector(mode = "list",length = length(biophys.inputs$hours))
 
-  for(i in seq_along(temp.data)){
-      dat.list <- temp.data[[i]]
+  for(i in seq_along(temp.out)){
+      dat.list <- temp.out[[i]]
       for(j in seq_along(dat.list[[1]])){
 #         Te <- dat.list$Te[[j]]
 #         Ta <- dat.list$Ta[[j]]
@@ -47,10 +47,10 @@ pft <- function(biophys.inputs,
       }
     HR <- strsplit(names(dat.list$Te), "_")
     HR <- data.frame(matrix(unlist(HR),nrow=length(HR),byrow=TRUE))
-    names(PFT) <- paste0("PFT_",HR[,2])
+    names(pft.hr) <- paste0("PFT_",HR[,2])
     evap.loss[[i]] <- pft.hr
     } # End month loop
-names(evap.loss) <- names(temp.data)
+names(evap.loss) <- names(temp.out)
 return(evap.loss)
 #####################################################################
 

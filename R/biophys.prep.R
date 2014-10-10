@@ -5,6 +5,7 @@
 #' @param month A vector of names to assign to the specified raster layer(s). If multiple months are supplied, the order must be them same as Tmax, Tmin, and Julian.
 #' @param Julian Julian day (1 - 365). If multiple months are supplied, the order of Julian must be them same as Tmax, Tmin, and month.
 #' @param hours A vector of values. Specify hours to calculate operative body temperature over.
+#' @param days A vector containing the number of days in each month. Order must correspond with order of months. If unspecified, each month/period will consist of 30 days.
 #' @param max.active_temp Maximum temprature that animals will be active (Default = 20)
 #' @param min.active_temp Minimum temperature that animals will be active (Default = 3)
 #' @param NoData.value Specify NoData value in raster layers (Default = -9999)
@@ -27,6 +28,7 @@
 #' @param Fa.c Fa constant (Default = 0.5)
 #' @param Fr.c Fr constant (Default = 0.5)
 #' @param Fg.c Fg constant (Default = 0.5)
+#' @param repro Energy (kJ) in 14 egg clutch (eggs 3.5 mm diameter). (Default = 4.86)
 #'
 #' @usage op.body.temp(Tmax,
 #' Tmin,
@@ -34,6 +36,7 @@
 #' month = NULL,
 #' Julian,
 #' hours,
+#' days = NULL,
 #' max.active_temp,
 #' min.active_temp,
 #' NoData.value = -9999,
@@ -55,7 +58,8 @@
 #' Fd.c = 0.8,
 #' Fa.c = 0.5,
 #' Fr.c = 0.5,
-#' Fg.c = 0.5)
+#' Fg.c = 0.5,
+#' repro = 4.86)
 #'
 #' @examples
 #' # Create example data
@@ -86,6 +90,7 @@ biophys.prep <- function(Tmax,                    # Maximum and minimum temperat
                          month = NULL,            # Name(s) of specified raster layers
                          Julian,                  # Julian day
                          hours,                   # Specify values as vector. e.g., c(1,2,3)
+                         days = NULL,                    # A vector of numbers corresponding to the days in each month
                          max.active_temp = 20,    # Maximum body temperature of active animas
                          min.active_temp = 3,     # Minimum body temperature of active animals
                          NoData.value = -9999,    # Specify NoData value in raster layers (-9999)
@@ -107,7 +112,8 @@ biophys.prep <- function(Tmax,                    # Maximum and minimum temperat
                          Fd.c = 0.8,              # constants for Fd, Fa, Fr, Fg
                          Fa.c = 0.5,
                          Fr.c = 0.5,
-                         Fg.c = 0.5
+                         Fg.c = 0.5,
+                         repro = 4.86             # Energy (kJ) in 14 egg clutch (eggs 3.5 mm diameter)
 ) {
   Tmax.dat <- Tmax
   Tmin.dat <- Tmin
@@ -149,6 +155,10 @@ if(is.null(month)){
   month <- paste0("month",seq_along(Tavg))
 }
 
+if(is.null(days)){
+  days <- rep(30,length(month))
+}
+
 names(Tavg) <- names(month)
 vector.length <- length(tx)
 
@@ -171,6 +181,7 @@ out <- list(Tmax = Tmax,
             month = month,
             Julian = Julian,
             hours = hours,
+            days = days,
             max.active_temp = max.active_temp,
             min.active_temp = min.active_temp,
             NoData.value = NoData.value,
@@ -193,6 +204,7 @@ out <- list(Tmax = Tmax,
             Fa.c = Fa.c,
             Fr.c = Fr.c,
             Fg.c = Fg.c,
+            repro = repro,
             Tavg = Tavg,
             raster.dat = raster.dat2,
             vector.length = vector.length

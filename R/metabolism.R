@@ -1,9 +1,9 @@
 #' Calculate active and resting metabolic rates, digestive efficiency, and necessary food consumption
 #' @param biophys.inputs Object created from running \code{\link[biophys]{biophys.prep}}
-#' @param temp.data Hourly operative body temperature and air temperature. Pass results from \code{\link[biophys]{op.temp.body}}
+#' @param temp.out Hourly operative body temperature and air temperature. Pass results from \code{\link[biophys]{op.temp.body}}
 #'
 #' @usage metabolism(biophys.inputs,
-#' temp.data)
+#' temp.out)
 #'
 #' @examples
 #' # Create example data
@@ -18,9 +18,9 @@
 #' night.hours <- c(19:24,1:7)
 #'
 #' biophys.input <- biophys.prep(r.max, r.min, r.elev, hour = night.hours, month = c("April"), Julian = c(106))
-#' temp.data <- op.body.temp(biophys.input)
+#' temp.out <- op.body.temp(biophys.input)
 #'
-#' metab.out <- metabolism(biophys.inputs, temp.data)
+#' metabolism.out <- metabolism(biophys.inputs, temp.out)
 #'
 #' @export
 #' @author Bill Peterman <Bill.Peterman@@gmail.com>
@@ -29,7 +29,7 @@
 
 
 ## METABOLISM===============================================================
-metabolism <- function(biophys.inputs, temp.data){
+metabolism <- function(biophys.inputs, temp.out){
 
   # Unpack inputs
   length.m <- biophys.inputs$length.m
@@ -46,8 +46,8 @@ metabolism <- function(biophys.inputs, temp.data){
   food.consump <- vector(mode = "list",length = length(biophys.inputs$hours))
 
 # Wrapper function for metabolism
-  for(i in seq_along(temp.data)){
-      Te.list <- temp.data[[i]]$Te
+  for(i in seq_along(temp.out)){
+      Te.list <- temp.out[[i]]$Te
       Tavg <- biophys.inputs$Tavg[[i]]
       for(j in seq_along(Te.list)){
 
@@ -80,7 +80,7 @@ metabolism <- function(biophys.inputs, temp.data){
     all.metab[[i]] <- ml
     } # End month loop (i)
 
-  names(all.metab) <- names(temp.data)
+  names(all.metab) <- names(temp.out)
   return(all.metab)
 
 } # End metabolism wrapper function
