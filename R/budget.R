@@ -102,7 +102,7 @@ budget <- function(biophys.inputs, PFT.out, metabolism.out){
     annual.PFT <- (rowSums(data.frame(PFT.month)))
 
     # Set annual energy budget cells <=0 to NA
-    annual.EB[annual.EB<=0] <- NA
+    # annual.EB[annual.EB<=0] <- NA
 
     # Make list of all original annual measures
     Annual.results <- list(Energy.Budget = annual.EB,

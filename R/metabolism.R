@@ -87,33 +87,50 @@ metabolism <- function(biophys.inputs, temp.out){
 
 
 # Function to calculate metabolic rates, digestive efficiency, and food consumption
-  metab.func <- function(Te, Tavg, mass, max.active_temp, min.active_temp ){
+# Function to calculate metabolic rates, digestive efficiency, and food consumption
+metab.func <- function(Te, Tavg, mass, max.active_temp, min.active_temp, m1 = NULL, m2 = NULL, m3 = NULL ){
 
   mr_act <- rep(0, length(Tavg)) # MetRate in kJ/hr
 
-# Values used to convert oxygen consumprion to kJ/hr and multiplied by a factor of 1.5 for activity
-# Active metabolic rates only for times when temperatures are suitable for potential activity
-    mr_act[Te<max.active_temp] <- (10^((0.035*Te[Te<max.active_temp]+
-                                     (0.368*log10(mass))-1.844))*
+  ## If values specified for m1-m3, use below
+  if(!is.null(m1)) {
+    # Active metabolic rates only for times when temperatures are suitable for potential activity
+    mr_act[Te<max.active_temp] <- (10^((m1*Te[Te<max.active_temp]+
+                                          (m2*log10(mass))-m3))*
                                      0.0056*0.001*3600*1.5)
 
-# If below minimum temp, set to zero
+    # If below minimum temp, set to zero
     mr_act[Te<min.active_temp] <- 0
 
 
-#Metabolic rates for times of inactivity. Temperature for inactive MR taken as nighttime average
+    #Metabolic rates for times of inactivity. Temperature for inactive MR taken as nighttime average
+    mr_inact <- 10^((m1*Tavg+(m2*log10(mass))-m3))*0.0056*0.001*3600
+  } else {
+
+    # Values used to convert oxygen consumprion to kJ/hr and multiplied by a factor of 1.5 for activity
+    # Active metabolic rates only for times when temperatures are suitable for potential activity
+    mr_act[Te<max.active_temp] <- (10^((0.035*Te[Te<max.active_temp]+
+                                          (0.368*log10(mass))-1.844))*
+                                     0.0056*0.001*3600*1.5)
+
+    # If below minimum temp, set to zero
+    mr_act[Te<min.active_temp] <- 0
+
+
+    #Metabolic rates for times of inactivity. Temperature for inactive MR taken as nighttime average
     mr_inact <- 10^((0.035*Tavg+(0.368*log10(mass))-1.844))*0.0056*0.001*3600
+  }
 
-# Digestive Efficiency (Bobka et al.)
-    DE <- -0.0094*Te+0.9903 # Dependent on body temperature
+  # Digestive Efficiency (Bobka et al.)
+  DE <- -0.0094*Te+0.9903 # Dependent on body temperature
 
-# Equation calculating energy consumption (less percentage determined by digestive efficiency function) on an hourly basis
-    food <- (((0.0149*Te^3-0.8119*Te^2+12.756*Te-43.06)*mass*0.004184)*DE)/24
+  # Equation calculating energy consumption (less percentage determined by digestive efficiency function) on an hourly basis
+  food <- (((0.0149*Te^3-0.8119*Te^2+12.756*Te-43.06)*mass*0.004184)*DE)/24
 
-# Combine all lists
-m.out <- list(mr_act = mr_act,
+  # Combine all lists
+  m.out <- list(mr_act = mr_act,
                 mr_inact = mr_inact,
                 DE = DE,
                 food = food)
-return(m.out)
+  return(m.out)
 }

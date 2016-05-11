@@ -29,6 +29,9 @@
 #' @param Fr.c Fr constant (Default = 0.5)
 #' @param Fg.c Fg constant (Default = 0.5)
 #' @param repro Energy (kJ) in 14 egg clutch (eggs 3.5 mm diameter). (Default = 4.86)
+#' @param m1 First parameter in metabolic rate equation
+#' @param m2 Second parameter in metabolic rate equation
+#' @param m3 Third parameter in metabolic rate equation
 #'
 #' @usage op.body.temp(Tmax,
 #' Tmin,
@@ -59,7 +62,10 @@
 #' Fa.c = 0.5,
 #' Fr.c = 0.5,
 #' Fg.c = 0.5,
-#' repro = 4.86)
+#' repro = 4.86,
+#' m1 = NULL,               # m1 - m3 = parameters in metabolic rate eq.
+#' m2 = NULL,
+#' m3 = NULL)
 #'
 #' @examples
 #' # Create example data
@@ -113,7 +119,10 @@ biophys.prep <- function(Tmax,                    # Maximum and minimum temperat
                          Fa.c = 0.5,
                          Fr.c = 0.5,
                          Fg.c = 0.5,
-                         repro = 4.86             # Energy (kJ) in 14 egg clutch (eggs 3.5 mm diameter)
+                         repro = 4.86,             # Energy (kJ) in 14 egg clutch (eggs 3.5 mm diameter)
+                         m1 = NULL,               # m1 - m3 = parameters in metabolic rate eq.
+                         m2 = NULL,
+                         m3 = NULL
 ) {
   Tmax.dat <- Tmax
   Tmin.dat <- Tmin
@@ -225,6 +234,9 @@ out <- list(Tmax = Tmax,
             Fg.c = Fg.c,
             repro = repro,
             Tavg = Tavg,
+            m1 = m1,
+            m2 = m2,
+            m3 = m3,
             raster.dat = raster.dat2,
             vector.length = vector.length,
             type = type
