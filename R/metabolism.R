@@ -35,6 +35,9 @@ metabolism <- function(biophys.inputs, temp.out){
   length.m <- biophys.inputs$length.m
   max.active_temp <- biophys.inputs$max.active_temp
   min.active_temp <- biophys.inputs$min.active_temp
+  m1 <- biophys.inputs$m1
+  m2 <- biophys.inputs$m2
+  m3 <- biophys.inputs$m3
 
   # Calcualte constants
   mass = 4599.1*length.m^2.5297 # Equation to predict the mass of the salamander from the SVL
@@ -55,7 +58,10 @@ metabolism <- function(biophys.inputs, temp.out){
                                  Tavg = Tavg,
                                  mass,
                                  max.active_temp,
-                                 min.active_temp )
+                                 min.active_temp,
+                                 m1 = m1,
+                                 m2 = m2,
+                                 m3 = m3 )
 
         mr_active[[j]] <- metab.list$mr_act
         mr_inactive[[j]] <- metab.list$mr_inact
