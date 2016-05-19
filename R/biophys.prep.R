@@ -32,6 +32,7 @@
 #' @param m1 First parameter in metabolic rate equation
 #' @param m2 Second parameter in metabolic rate equation
 #' @param m3 Third parameter in metabolic rate equation
+#' @param unit.conv Default = "G" to use original surface area unit conversion of Gifford. Use "P" to use the unit conversion of Peterman.
 #'
 #' @usage op.body.temp(Tmax,
 #' Tmin,
@@ -65,7 +66,8 @@
 #' repro = 4.86,
 #' m1 = NULL,               # m1 - m3 = parameters in metabolic rate eq.
 #' m2 = NULL,
-#' m3 = NULL)
+#' m3 = NULL,
+#' unit.conv = "G")
 #'
 #' @examples
 #' # Create example data
@@ -122,7 +124,8 @@ biophys.prep <- function(Tmax,                    # Maximum and minimum temperat
                          repro = 4.86,             # Energy (kJ) in 14 egg clutch (eggs 3.5 mm diameter)
                          m1 = NULL,               # m1 - m3 = parameters in metabolic rate eq.
                          m2 = NULL,
-                         m3 = NULL
+                         m3 = NULL,
+                         unit.conv = "G"
 ) {
   Tmax.dat <- Tmax
   Tmin.dat <- Tmin
@@ -237,6 +240,7 @@ out <- list(Tmax = Tmax,
             m1 = m1,
             m2 = m2,
             m3 = m3,
+            unit.conv = unit.conv,
             raster.dat = raster.dat2,
             vector.length = vector.length,
             type = type

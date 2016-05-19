@@ -60,6 +60,10 @@ return(evap.loss)
 evap.func <- function(Te, Ta, biophys.inputs) {
 #   Te <- dat$Te
 #   Ta <- dat$Ta
+
+  ## Use original or Updated Conversion factor?
+  unit.conv <- biophys.inputs$unit.conv
+
   length.m <- biophys.inputs$length.m
   pCp <- biophys.inputs$pCp
   u <- biophys.inputs$u
@@ -82,7 +86,12 @@ evap.func <- function(Te, Ta, biophys.inputs) {
 
   pse=5.4509+(0.11745*Te)+(0.024499*Te^2)
 
-  As=(9.62*mass^0.614)*0.001 #As=surface area of the body (m^2) from Whitford and Hutcinson 1967. The 0.001 converts to mm^2
+  if(unit.conv=="G") {
+    As=(9.62*mass^0.614)*0.001 #As=surface area of the body (m^2) from Whitford and Hutcinson 1967. The 0.001 converts to mm^2
+  } else {
+    As=(9.62*mass^0.614)*0.0001 #As=surface area of the body (m^2) from Whitford and Hutcinson 1967. The 0.001 converts to mm^2
+  }
+
 
   ##Evaporative Water Loss===================================================
 
